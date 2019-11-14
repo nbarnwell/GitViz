@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace GitViz.Logic
 {
     public class LogParser
     {
-        public readonly string ExpectedOutputFormat = "%ct %H %P %d";
+        public readonly string ExpectedOutputFormat = "{{%ct}}{{%an}}{{%H}}{{%P}}{{%d}}{{%s}}";
 
         public IEnumerable<Commit> ParseCommits(StreamReader gitLogOutput)
         {
@@ -21,13 +21,17 @@ namespace GitViz.Logic
             gitLogOutput.Close();
         }
 
-        static readonly Regex ParseCommitRegex = new Regex(@"^(?<commitDate>\d*) (?<hash>\w{7,40})(?<parentHashes>( \w{7,40})+)?([ ]+\((?<refs>.*?)\))?");
+        static readonly Regex ParseCommitRegex = new Regex(@"^{{(?<commitDate>\d*)}}{{(?<authorName>.*)?}}{{(?<hash>\w{7,40})}}{{(?<parentHashes>.*)?}}{{(?<refs>.*?)}}{{(?<subject>.*)}}");
 
         internal static Commit ParseCommit(string logOutputLine)
         {
             var match = ParseCommitRegex.Match(logOutputLine.Trim());
 
             var commitDate = long.Parse(match.Groups["commitDate"].Value);
+
+            var authorName = match.Groups["authorName"].Success
+                ? match.Groups["authorName"].Value
+                : null;
 
             var parentHashes = match.Groups["parentHashes"].Success
                 ? match.Groups["parentHashes"].Value.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
@@ -41,12 +45,18 @@ namespace GitViz.Logic
                     .ToArray()
                 : null;
 
+            var subject = match.Groups["subject"].Success
+                ? match.Groups["subject"].Value
+                : null;
+
             return new Commit
             {
                 Hash = match.Groups["hash"].Value,
+                AuthorName = authorName,
                 CommitDate = commitDate,
                 ParentHashes = parentHashes,
-                Refs = refs
+                Refs = refs,
+                Subject = subject
             };
         }
     }

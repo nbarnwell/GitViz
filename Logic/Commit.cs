@@ -1,4 +1,4 @@
-﻿namespace GitViz.Logic
+namespace GitViz.Logic
 {
     public class Commit
     {
@@ -6,6 +6,8 @@
         public string[] ParentHashes { get; set; }
         public string[] Refs { get; set; }
         public long CommitDate { get; set; }
+        public string Subject { get; set; }
+        public string AuthorName { get; set; }
 
         public string ShortHash
         {

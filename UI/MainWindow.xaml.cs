@@ -40,7 +40,7 @@ namespace UI
             if (!viewModel.IsNewRepository)
                 return;
             viewModel.IsNewRepository = false;
-            ResizeWindowDependingOnGraphSize();
+            //ResizeWindowDependingOnGraphSize();
         }
 
         public System.Windows.Forms.Screen GetCurrentScreen()

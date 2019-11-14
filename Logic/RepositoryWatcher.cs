@@ -18,7 +18,7 @@ namespace GitViz.Logic
         protected virtual void OnChangeDetected()
         {
             var handler = ChangeDetected;
-            if (handler != null) handler(this, EventArgs.Empty);
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
         public RepositoryWatcher(string path, Boolean isBare)
