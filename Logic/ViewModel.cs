@@ -41,8 +41,6 @@ namespace GitViz.Logic
                     var commandExecutor = new GitCommandExecutor(_repositoryPath);
                     var logRetriever = new LogRetriever(commandExecutor, _parser);
 
-                    RefreshGraph(logRetriever);
-
                     IsNewRepository = true;
 
                     _watcher = new RepositoryWatcher(_repositoryPath, IsBareGitRepository(_repositoryPath));

@@ -8,6 +8,9 @@ using System.Windows;
 
 namespace UI
 {
+    using System.IO;
+    using System.Text.RegularExpressions;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -17,9 +20,33 @@ namespace UI
         {
             var wnd = new MainWindow();
             wnd.Show();
+
             if (e.Args.Length == 1)
-                wnd.TxtRepositoryPath.Text = e.Args[0];
+            {
+                wnd.StartWatching(e.Args[0]);
+            }
+            else
+            {
+                if (IsValidGitRepository(Environment.CurrentDirectory))
+                {
+                    wnd.StartWatching(Environment.CurrentDirectory);
+                }
+            }
         }
 
+        static Boolean IsBareGitRepository(String path) 
+        {
+            String configFileForBareRepository = Path.Combine(path, "config"); 
+            return File.Exists(configFileForBareRepository) &&
+                  Regex.IsMatch(File.ReadAllText(configFileForBareRepository), @"bare\s*=\s*true", RegexOptions.IgnoreCase);
+        }
+
+        static bool IsValidGitRepository(string path)
+        {
+            return !string.IsNullOrEmpty(path)
+                && Directory.Exists(path)
+                && (Directory.Exists(Path.Combine(path, ".git")) ||
+                 IsBareGitRepository(path));
+        }
     }
 }

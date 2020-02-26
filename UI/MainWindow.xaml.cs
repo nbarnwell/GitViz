@@ -13,6 +13,11 @@ namespace UI
             WindowPlacement();
         }
 
+        public void StartWatching(string path)
+        {
+            TxtRepositoryPath.Text = path;
+        }
+
         private void WindowPlacement()
         {
             Top = SystemParameters.WorkArea.Top;
